@@ -1,0 +1,58 @@
+<div class="viewer-container" *ngIf="!loading">
+  <header class="viewer-header">
+    <button class="btn-back" (click)="goBack()">← Back to Dashboard</button>
+    <h1>{{ course?.title }}</h1>
+    <button class="btn-logout" (click)="logout()">Logout</button>
+  </header>
+
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+  </div>
+
+  <div class="viewer-content" *ngIf="course && currentPage">
+    <div class="page-header">
+      <h2>{{ currentPage.title }}</h2>
+      <span class="page-number">Page {{ currentPageNumber }} of {{ totalPages }}</span>
+    </div>
+
+    <div class="page-content" [innerHTML]="currentPage.content"></div>
+
+    <div class="page-navigation">
+      <button 
+        class="btn-nav btn-prev" 
+        (click)="goToPreviousPage()" 
+        [disabled]="currentPageIndex === 0"
+      >
+        ← Previous
+      </button>
+
+      <div class="page-selector">
+        <select 
+          class="page-dropdown" 
+          [(ngModel)]="currentPageIndex"
+          (ngModelChange)="goToPage(currentPageIndex)"
+        >
+          <option *ngFor="let page of course.pages; let i = index" [value]="i">
+            {{ i + 1 }}. {{ page.title }}
+          </option>
+        </select>
+      </div>
+
+      <button 
+        class="btn-nav btn-next" 
+        (click)="goToNextPage()" 
+        [disabled]="currentPageIndex === totalPages - 1"
+      >
+        Next →
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="course && !currentPage" class="no-pages">
+    <p>No pages found in this course.</p>
+  </div>
+</div>
+
+<div *ngIf="loading" class="loading-container">
+  <p>Loading course...</p>
+</div>

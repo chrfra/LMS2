@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: lms2-backend
+    runtime: dotnet
+    buildCommand: cd LMS.API && dotnet publish -c Release -o out
+    startCommand: ./LMS.API/out/LMS.API
+    envVars:
+      - key: DATABASE_URL
+        value: data/lms.db
+      - key: ASPNETCORE_URLS
+        value: http://0.0.0.0:10000
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+
+  - type: web
+    name: lms2-frontend
+    runtime: node
+    buildCommand: cd src && npm install && npm run build
+    startCommand: cd src && npm start
+    envVars:
+      - key: API_URL
+        fromService:
+          name: lms2-backend
+          property: url

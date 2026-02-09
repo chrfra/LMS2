@@ -1,0 +1,66 @@
+<div class="dashboard-container">
+  <header class="dashboard-header">
+    <h1>LMS2 Admin Dashboard</h1>
+    <button class="btn-logout" (click)="logout()">Logout</button>
+  </header>
+
+  <div class="dashboard-content">
+    <section class="upload-section">
+      <h2>Upload SCORM Course</h2>
+      <div class="upload-form">
+        <div class="file-input-wrapper">
+          <input 
+            type="file" 
+            id="fileInput" 
+            accept=".zip"
+            (change)="onFileSelected($event)"
+          >
+          <label for="fileInput" class="file-label">
+            {{ selectedFile ? selectedFile.name : 'Choose SCORM package (.zip)' }}
+          </label>
+        </div>
+        <button 
+          class="btn-upload" 
+          (click)="uploadCourse()" 
+          [disabled]="!selectedFile || uploading"
+        >
+          {{ uploading ? 'Uploading...' : 'Upload Course' }}
+        </button>
+      </div>
+    </section>
+
+    <div *ngIf="error" class="alert alert-error">
+      {{ error }}
+    </div>
+
+    <div *ngIf="message" class="alert alert-success">
+      {{ message }}
+    </div>
+
+    <section class="courses-section">
+      <h2>Courses</h2>
+      <div *ngIf="loading" class="loading">Loading courses...</div>
+      
+      <div *ngIf="!loading && courses.length === 0" class="no-courses">
+        <p>No courses uploaded yet. Upload your first SCORM course to get started.</p>
+      </div>
+
+      <div *ngIf="!loading && courses.length > 0" class="courses-grid">
+        <div *ngFor="let course of courses" class="course-card">
+          <div class="course-header">
+            <h3>{{ course.title }}</h3>
+            <span class="page-count">{{ course.pageCount }} pages</span>
+          </div>
+          <p class="course-description">{{ course.description }}</p>
+          <div class="course-meta">
+            <small>Created: {{ course.createdAt | date: 'short' }}</small>
+          </div>
+          <div class="course-actions">
+            <button class="btn-view" (click)="viewCourse(course.id)">View Course</button>
+            <button class="btn-delete" (click)="deleteCourse(course.id, course.title)">Delete</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
