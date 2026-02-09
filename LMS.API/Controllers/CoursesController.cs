@@ -104,9 +104,13 @@ namespace LMS.API.Controllers
 
             try
             {
-                using (var stream = file.OpenReadStream())
+                // Buffer the entire file into memory to avoid stream disposal issues
+                using (var memoryStream = new MemoryStream())
                 {
-                    var (course, pages) = await _scormParser.ParseScormPackageAsync(stream, file.FileName);
+                    await file.CopyToAsync(memoryStream);
+                    memoryStream.Position = 0;
+                    
+                    var (course, pages) = await _scormParser.ParseScormPackageAsync(memoryStream, file.FileName);
 
                     _context.Courses.Add(course);
                     await _context.SaveChangesAsync();

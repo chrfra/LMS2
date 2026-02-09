@@ -35,6 +35,7 @@ namespace LMS.Infrastructure.Services
                 // Extract the zip file
                 using (var zipFile = new ZipFile(zipStream))
                 {
+                    zipFile.IsStreamOwner = false;  // Don't close the input stream
                     foreach (ZipEntry entry in zipFile)
                     {
                         if (!entry.IsDirectory)
