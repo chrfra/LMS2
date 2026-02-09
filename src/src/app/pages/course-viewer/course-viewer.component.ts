@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CourseService } from '../services/course.service';
-import { AuthService } from '../services/auth.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { CourseService } from '../../services/course.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-course-viewer',
   templateUrl: './course-viewer.component.html',
-  styleUrls: ['./course-viewer.component.css']
+  styleUrls: ['./course-viewer.component.css'],
+  imports: [CommonModule, FormsModule]
 })
 export class CourseViewerComponent implements OnInit {
   course: any = null;

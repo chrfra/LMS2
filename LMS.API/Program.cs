@@ -7,9 +7,21 @@ using LMS.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Ensure data directory exists
+var dataDir = Path.Combine(AppContext.BaseDirectory, "data");
+if (!Directory.Exists(dataDir))
+{
+    Directory.CreateDirectory(dataDir);
+}
+
 // Add services to the container
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (connectionString != null && connectionString.Contains("data/"))
+{
+    connectionString = connectionString.Replace("data/", $"{dataDir}/");
+}
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite(connectionString));
 
 builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
 builder.Services.AddScoped<IScormParserService, ScormParserService>();
